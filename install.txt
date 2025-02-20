@@ -1,0 +1,11 @@
+conda create -n nn_test python=3.12
+
+pip install tqdm
+
+
+https://pytorch.org/get-started/locally/
+CPU:
+pip3 install torch torchvision torchaudio
+
+GPU:
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu126
