@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 
 from enum import Enum
-
+import time
 
 #========================= Lib imports ========================
 
@@ -20,6 +20,8 @@ from SimpleUnetModel import SimpleUNetModel
 from SegmentationInputLoader import SegmentationInputLoader, LoaderType
 from Settings import Settings
 from ImageUtils import ImageUtils, ToRGB, MyToTensor
+
+from DiceLoss import BceDiceLoss
 
 #================================================================================
 #================================================================================
@@ -144,11 +146,16 @@ def run_inference(model: nn.Module,
 
 if __name__ == "__main__":
 
+    runId = str((int)(time.time()))
+
     s = Settings()
 
     print(f"Current dir: {s.currentDir}")
     print(f"Dataset path: {s.datasetPath}")
     print(f"Will run on {s.device}")
+
+    os.makedirs(os.path.join(s.currentDir, "outputs", runId), exist_ok=True)
+    os.makedirs(os.path.join(s.currentDir, "checkpoints", runId), exist_ok=True)
 
     #---------------------------------------------------------------------------
     #Prepare training data
@@ -177,17 +184,18 @@ if __name__ == "__main__":
     run_inference(model, 
                   s, 
                   os.path.join(s.currentDir, "test_data", "Lenna.png"), 
-                  os.path.join(s.currentDir, "outputs", "Lenna_output_not_trained.png"))
+                  os.path.join(s.currentDir, "outputs", runId, "Lenna_output_not_trained.png"))
 
     run_inference(model, 
                   s, 
                   os.path.join(s.currentDir, "test_data", "20120229_121714.jpg"), 
-                  os.path.join(s.currentDir, "outputs", "20120229_121714_output_not_trained.png"))
+                  os.path.join(s.currentDir, "outputs", runId, "20120229_121714_output_not_trained.png"))
     
     #---------------------------------------------------------------------------
     #Prepare training loss function and optimizer
 
-    loss_fn = torch.nn.BCEWithLogitsLoss()
+    #loss_fn = torch.nn.BCEWithLogitsLoss()
+    loss_fn = BceDiceLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
     #---------------------------------------------------------------------------
@@ -197,7 +205,7 @@ if __name__ == "__main__":
         avg_loss = train_one_epoch(epoch, model, trainDataset, optimizer, loss_fn, s)
 
         if (epoch % s.saveEveryNthEpoch == 0):
-            torch.save(model.state_dict(), os.path.join(s.currentDir, "checkpoints", f"model_chackpoint_{epoch}.pth"))
+            torch.save(model.state_dict(), os.path.join(s.currentDir, "checkpoints", runId, f"model_chackpoint_{epoch}.pth"))
 
     #---------------------------------------------------------------------------
     # Testing
@@ -211,23 +219,23 @@ if __name__ == "__main__":
     run_inference(model, 
                   s, 
                   os.path.join(s.datasetPath, "107252444", "20221124_1100.jpg"), 
-                  os.path.join(s.currentDir, "outputs", "20221124_1100_output_trained.png"))
+                  os.path.join(s.currentDir, "outputs", runId, "20221124_1100_output_trained.png"))
 
     #use some different image
     run_inference(model, 
                   s, 
                   os.path.join(s.currentDir, "test_data", "Lenna.png"), 
-                  os.path.join(s.currentDir, "outputs", "Lenna_output_trained.png"))
+                  os.path.join(s.currentDir, "outputs", runId, "Lenna_output_trained.png"))
 
     run_inference(model, 
                   s, 
                   os.path.join(s.currentDir, "test_data", "20120229_121714.jpg"), 
-                  os.path.join(s.currentDir, "outputs", "20120229_121714_output_trained.png"))
+                  os.path.join(s.currentDir, "outputs", runId, "20120229_121714_output_trained.png"))
 
     run_inference(model, 
                   s, 
                   os.path.join(s.currentDir, "test_data", "20120229_121714.jpg"), 
-                  os.path.join(s.currentDir, "outputs", "20120229_121714_output_trained_threshold.png"),
+                  os.path.join(s.currentDir, "outputs", runId, "20120229_121714_output_trained_threshold.png"),
                   True)
 
 

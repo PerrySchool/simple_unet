@@ -13,14 +13,15 @@ class Settings:
     imgW: int = 256
     imgH: int = 256    
     
-    maxTrainSize: int | None = 100
+    maxTrainSize: int | None = None
     maxTestSize: int | None = 10
 
-    numWorkers: int = 0
-    batchSize: int = 2
-    epochCount: int = 100
+    numWorkers: int = 4 #0 for single "thread" processing and/or if > 0 is crashing :-)
+    batchSize: int = 10
+    epochCount: int = 50
 
     saveEveryNthEpoch: int = 20
     loadModelCheckpoint: str | None = None
+                                      #os.path.join(currentDir, "checkpoints", "model_chackpoint_40.pth")
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
