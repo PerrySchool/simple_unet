@@ -6,7 +6,8 @@ To install using conda:
 
 `pip install tqdm`
 
-https://pytorch.org/get-started/locally/
+This tutorial uses PyTorch library (https://pytorch.org/get-started/locally/):
+
 for CPU only:
 
 `pip3 install torch torchvision torchaudio`
