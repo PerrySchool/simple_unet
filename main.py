@@ -167,6 +167,9 @@ if __name__ == "__main__":
                                          subsetSize = s.maxTestSize)
     testDataset = testLoader.buildDataLoader()
     
+    print(f"Train size: {trainLoader.getSize()}")
+    print(f"Test size: {testLoader.getSize()}")
+
     #---------------------------------------------------------------------------
     #Prepare model
     model = SimpleUNetModel(channels_in=s.channelsCount,
@@ -206,6 +209,9 @@ if __name__ == "__main__":
 
         if (epoch % s.saveEveryNthEpoch == 0):
             torch.save(model.state_dict(), os.path.join(s.currentDir, "checkpoints", runId, f"model_chackpoint_{epoch}.pth"))
+    #endfor
+
+    torch.save(model.state_dict(), os.path.join(s.currentDir, "checkpoints", runId, f"model_chackpoint_final.pth"))
 
     #---------------------------------------------------------------------------
     # Testing
