@@ -243,10 +243,11 @@ if __name__ == "__main__":
                   os.path.join(s.currentDir, "test_data", "20120229_121714.jpg"), 
                   os.path.join(s.currentDir, "outputs", runId, "20120229_121714_output_trained_threshold.png"),
                   True)
-
-
-    #---------------------------------------------------------------------------
-    # todo:
-    # missing saving & loading trained model
+                  
+    run_inference(model, 
+                  s, 
+                  os.path.join(s.currentDir, "test_data", "20250224_1100.jpg"), 
+                  os.path.join(s.currentDir, "outputs", runId, "20250224_1100_output_trained_threshold.png"),
+                  True)
 
     print("Finished")
